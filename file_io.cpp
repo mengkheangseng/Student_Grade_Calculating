@@ -15,7 +15,11 @@ void saveToFile(const vector<Student> &students, const string &filename)
 
     for (const auto &s : students)
     {
-        file << s.studentID << "," << s.name << "," << s.averageScore << "," << s.letterGrade << "," << s.status << "\n";
+        file << s.studentID << ","
+             << s.name << "," 
+             << s.averageScore << "," 
+             << s.letterGrade << "," 
+             << s.status << "\n";
     }
     file.close();
     cout << "Data successfully saved to " << filename << "\n";
@@ -34,7 +38,8 @@ void loadFromFile(vector<Student> &students, const string &filename)
     string line;
     while (getline(file, line))
     {
-        stringstream ss(line);
+        stringstream ss(line); // ss is just a variable name that the programmer chose. It stands for "string stream,"
+        
         Student s;
         string avgStr;
 
