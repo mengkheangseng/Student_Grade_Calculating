@@ -6,16 +6,24 @@
 
 using namespace std;
 
-// The shared Student struct
+struct Course
+{
+    std::string subjectName;
+    double score;
+    int credits;
+    std::string grade;
+    double gpa;
+};
+
 struct Student
 {
-    string studentID;
-    string name;
-    vector<string> courseNames;
-    vector<double> marks;
-    double averageScore;
-    string letterGrade;
-    string status;
+    std::string studentID;
+    std::string name;
+    std::vector<Course> courses;
+    int totalCreditsAttempted;
+    int totalCreditsEarned;
+    double cumulativeGPA;
+    std::string academicStanding;
 };
 
 // Function declarations for File I/O 
