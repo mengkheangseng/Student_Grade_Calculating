@@ -1,0 +1,1 @@
+S1001,Mengkheang Seng,12,12,3.5,Good Standing,Math|90|3|A-|3.67,Science|93|3|A|4,Geography|85|3|B|3,Art and Culture|87|3|B+|3.33

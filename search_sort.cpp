@@ -24,3 +24,7 @@ void sortByHighestGPA(std::vector<Student> &students)
                   return a.cumulativeGPA > b.cumulativeGPA; // Descending order (highest GPA first)
               });
 }
+
+// lambda function: function without name. [](const Student &a, const Student &b) {return a.cumulativeGPA > b.cumulativeGPA;}
+
+// In Student *searchStudentByName(...), the asterisk (*) means that the function returns a pointer to a Student object rather than a copy of the object itself.

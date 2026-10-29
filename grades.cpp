@@ -9,23 +9,6 @@ using namespace std;
 // 1. GRADE & AVERAGE CALCULATION ENGINE
 // ============================================================================
 
-/**
- * Calculates arithmetic average from a vector of numerical marks.
- */
-double calculateAverage(const vector<double>& marks)
-{
-    if (marks.empty())
-    {
-        return 0.0;
-    }
-
-    double sum = 0.0;
-    for (size_t i = 0; i < marks.size(); ++i)
-    {
-        sum += marks[i];
-    }
-    return sum / static_cast<double>(marks.size());
-}
 
 /**
  * Calculates the average percentage score across all courses for a student.
@@ -74,6 +57,34 @@ string calculateLetterGrade(double score)
     else if (score >= 63.0) return "D";
     else if (score >= 60.0) return "D-";
     else                    return "F";
+}
+
+std::string getLetterGradeFromGPA(double cumulativeGPA)
+{
+    if (cumulativeGPA >= 4.00)
+        return "A";
+    else if (cumulativeGPA >= 3.67)
+        return "A-";
+    else if (cumulativeGPA >= 3.33)
+        return "B+";
+    else if (cumulativeGPA >= 3.00)
+        return "B";
+    else if (cumulativeGPA >= 2.67)
+        return "B-";
+    else if (cumulativeGPA >= 2.33)
+        return "C+";
+    else if (cumulativeGPA >= 2.00)
+        return "C";
+    else if (cumulativeGPA >= 1.67)
+        return "C-";
+    else if (cumulativeGPA >= 1.33)
+        return "D+";
+    else if (cumulativeGPA >= 1.00)
+        return "D";
+    else if (cumulativeGPA >= 0.67)
+        return "D-";
+    else
+        return "F";
 }
 
 /**
@@ -338,7 +349,7 @@ void printIndividualReportCard(const Student& student)
          << right << setw(12) << "Score (/100)"
          << setw(10) << "Credits"
          << setw(10) << "Grade"
-         << setw(14) << "Quality Pts" << "\n";
+         << setw(14) << "GPA" << "\n";
     cout << "------------------------------------------------------------------------\n";
 
     // Course Rows
@@ -357,7 +368,7 @@ void printIndividualReportCard(const Student& student)
     cout << " Total Credits Earned    : " << student.totalCreditsEarned << "\n";
     cout << " Cumulative GPA          : " << fixed << setprecision(2) << student.cumulativeGPA << " / 4.00\n";
     cout << " Academic Standing       : " << student.academicStanding << "\n";
-    cout << " Remarks                 : " << getGradeRemarks(calculateLetterGrade(calculateStudentAverage(student))) << "\n";
+    cout << " Remarks                 : \""<< getLetterGradeFromGPA<< "\" "<< (calculateLetterGrade(calculateStudentAverage(student))) << "\n";
     cout << "========================================================================\n";
 }
 

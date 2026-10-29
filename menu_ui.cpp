@@ -6,25 +6,27 @@
 #include <iomanip>
 
 // Forward declarations for functions from Member 1 and Member 3
-void saveToFile(const std::vector<Student>& students, const std::string& filename);
-Student* searchStudentByName(std::vector<Student>& students, const std::string& searchName);
-void sortByHighestGPA(std::vector<Student>& students);
-void computeStudentMetrics(Student& student);
-void printIndividualReportCard(const Student& student);
-void printClassRosterTable(const std::vector<Student>& students);
-double calculateClassAverage(const std::vector<Student>& students);
-double getHighestScore(const std::vector<Student>& students);
-double getLowestScore(const std::vector<Student>& students);
-int countPassingStudents(const std::vector<Student>& students, double passingThreshold);
-int countFailingStudents(const std::vector<Student>& students, double passingThreshold);
+void saveToFile(const std::vector<Student> &students, const std::string &filename);
+Student *searchStudentByName(std::vector<Student> &students, const std::string &searchName);
+void computeStudentMetrics(Student &student);
+void printIndividualReportCard(const Student &student);
+double calculateClassAverage(const std::vector<Student> &students);
+double getHighestScore(const std::vector<Student> &students);
+double getLowestScore(const std::vector<Student> &students);
+int countPassingStudents(const std::vector<Student> &students, double passingThreshold);
+int countFailingStudents(const std::vector<Student> &students, double passingThreshold);
 
-// Robust integer input validator (prevents crashes from letters or out-of-range choices)
-int getValidatedInt(const std::string& prompt, int minVal, int maxVal) {
+// Robust integer input validator
+int getValidatedInt(const std::string &prompt, int minVal, int maxVal)
+{
     int value;
-    while (true) {
+    while (true)
+    {
         std::cout << prompt;
-        if (std::cin >> value) {
-            if (value >= minVal && value <= maxVal) {
+        if (std::cin >> value)
+        {
+            if (value >= minVal && value <= maxVal)
+            {
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 return value;
             }
@@ -35,13 +37,17 @@ int getValidatedInt(const std::string& prompt, int minVal, int maxVal) {
     }
 }
 
-// Robust double input validator (for scores and marks between 0 and 100)
-double getValidatedDouble(const std::string& prompt, double minVal, double maxVal) {
+// Robust double input validator
+double getValidatedDouble(const std::string &prompt, double minVal, double maxVal)
+{
     double value;
-    while (true) {
+    while (true)
+    {
         std::cout << prompt;
-        if (std::cin >> value) {
-            if (value >= minVal && value <= maxVal) {
+        if (std::cin >> value)
+        {
+            if (value >= minVal && value <= maxVal)
+            {
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 return value;
             }
@@ -52,38 +58,68 @@ double getValidatedDouble(const std::string& prompt, double minVal, double maxVa
     }
 }
 
-// Add a new student record along with courses and scores
-void addNewStudent(std::vector<Student>& students) {
+// Option 1: Add Student (with Auto-Generated ID)
+void addNewStudent(std::vector<Student> &students, const std::string &filename)
+{
     Student newStudent;
-    std::cout << "\n--- ADD NEW STUDENT ---\n";
-    std::cout << "Enter Student ID: ";
-    std::getline(std::cin, newStudent.studentID);
-    
-    std::cout << "Enter Student Name: ";
+    std::cout << "\n--- ADD STUDENT ---\n";
+
+    // Auto-generate Student ID (e.g., S1001, S1002, S1003...)
+    int nextIdNum = 1001 + static_cast<int>(students.size());
+    newStudent.studentID = "S" + std::to_string(nextIdNum);
+
+    std::cout << "Assigned Student ID  : " << newStudent.studentID << "\n";
+
+    std::cout << "Enter Student Name   : ";
     std::getline(std::cin, newStudent.name);
 
-    int numCourses = getValidatedInt("Enter number of courses for this student (1-10): ", 1, 10);
-    
-    for (int i = 0; i < numCourses; ++i) {
+    int numCourses = getValidatedInt("Enter number of courses (1-10): ", 1, 10);
+
+    for (int i = 0; i < numCourses; ++i)
+    {
         Course c;
         std::cout << "\nCourse " << (i + 1) << " Name: ";
         std::getline(std::cin, c.subjectName);
-
         c.score = getValidatedDouble("Enter score (0 - 100): ", 0.0, 100.0);
         c.credits = getValidatedInt("Enter course credits (1 - 5): ", 1, 5);
-        
         newStudent.courses.push_back(c);
     }
 
-    // Compute grades and cumulative GPA using Member 3's engine
     computeStudentMetrics(newStudent);
     students.push_back(newStudent);
-    std::cout << "\nStudent successfully added and metrics computed!\n";
+    saveToFile(students, filename); // Auto-save on change
+    std::cout << "\nStudent successfully added and saved with ID " << newStudent.studentID << "!\n";
 }
 
-// Update an existing student's record
-void updateStudentRecord(std::vector<Student>& students) {
-    if (students.empty()) {
+// Option 2: View Individual Student Record
+void viewIndividualRecord(std::vector<Student> &students)
+{
+    if (students.empty())
+    {
+        std::cout << "\nNo student records available.\n";
+        return;
+    }
+
+    std::string searchName;
+    std::cout << "\nEnter student name to view record: ";
+    std::getline(std::cin, searchName);
+
+    Student *found = searchStudentByName(students, searchName);
+    if (found != nullptr)
+    {
+        printIndividualReportCard(*found);
+    }
+    else
+    {
+        std::cout << "\nStudent \"" << searchName << "\" not found.\n";
+    }
+}
+
+// Option 3: Update Student Record
+void updateStudentRecord(std::vector<Student> &students, const std::string &filename)
+{
+    if (students.empty())
+    {
         std::cout << "\nNo student records available to update.\n";
         return;
     }
@@ -92,8 +128,9 @@ void updateStudentRecord(std::vector<Student>& students) {
     std::cout << "\nEnter name of student to update: ";
     std::getline(std::cin, searchName);
 
-    Student* found = searchStudentByName(students, searchName);
-    if (found == nullptr) {
+    Student *found = searchStudentByName(students, searchName);
+    if (found == nullptr)
+    {
         std::cout << "Student \"" << searchName << "\" not found.\n";
         return;
     }
@@ -103,13 +140,17 @@ void updateStudentRecord(std::vector<Student>& students) {
     std::cout << "2. Re-enter Course Scores\n";
     int choice = getValidatedInt("Choose update option (1-2): ", 1, 2);
 
-    if (choice == 1) {
-        std::cout << "Enter new name (current: " << found->name << "): ";
+    if (choice == 1)
+    {
+        std::cout << "Enter new Name: ";
         std::getline(std::cin, found->name);
-    } else if (choice == 2) {
+    }
+    else if (choice == 2)
+    {
         found->courses.clear();
         int numCourses = getValidatedInt("Enter new number of courses (1-10): ", 1, 10);
-        for (int i = 0; i < numCourses; ++i) {
+        for (int i = 0; i < numCourses; ++i)
+        {
             Course c;
             std::cout << "\nCourse " << (i + 1) << " Name: ";
             std::getline(std::cin, c.subjectName);
@@ -119,12 +160,15 @@ void updateStudentRecord(std::vector<Student>& students) {
         }
         computeStudentMetrics(*found);
     }
-    std::cout << "\nStudent record successfully updated!\n";
+    saveToFile(students, filename); // Auto-save on change
+    std::cout << "\nStudent record successfully updated and saved!\n";
 }
 
-// Delete an existing student entry from the vector
-void deleteStudentRecord(std::vector<Student>& students) {
-    if (students.empty()) {
+// Option 4: Delete Student Record
+void deleteStudentRecord(std::vector<Student> &students, const std::string &filename)
+{
+    if (students.empty())
+    {
         std::cout << "\nNo student records available to delete.\n";
         return;
     }
@@ -133,100 +177,80 @@ void deleteStudentRecord(std::vector<Student>& students) {
     std::cout << "\nEnter name of student to delete: ";
     std::getline(std::cin, searchName);
 
-    auto it = std::remove_if(students.begin(), students.end(), [&searchName](const Student& s) {
-        return s.name == searchName;
-    });
+    auto it = std::remove_if(students.begin(), students.end(), [&searchName](const Student &s)
+                             { return s.name == searchName; });
 
-    if (it != students.end()) {
+    if (it != students.end())
+    {
         students.erase(it, students.end());
-        std::cout << "\nStudent record successfully deleted.\n";
-    } else {
+        saveToFile(students, filename); // Auto-save on change
+        std::cout << "\nStudent record successfully deleted and saved!\n";
+    }
+    else
+    {
         std::cout << "\nStudent \"" << searchName << "\" not found.\n";
     }
 }
 
-// Main Interactive Menu Loop
-void runApplicationMenu(std::vector<Student>& students, const std::string& filename) {
-    int choice = 0;
-    do {
-        std::cout << "\n========================================\n";
-        std::cout << "      STUDENT REPORT CARD SYSTEM        \n";
-        std::cout << "========================================\n";
-        std::cout << "1. Add New Student Record\n";
-        std::cout << "2. View Class Roster Summary\n";
-        std::cout << "3. Search & View Individual Report Card\n";
-        std::cout << "4. Update Student Record\n";
-        std::cout << "5. Delete Student Record\n";
-        std::cout << "6. Rank Students by Highest GPA\n";
-        std::cout << "7. View Class Analytics Dashboard\n";
-        std::cout << "8. Save Data to File\n";
-        std::cout << "9. Exit Program\n";
-        
-        choice = getValidatedInt("Enter your choice (1-9): ", 1, 9);
+// Option 5: View Class Analytics Dashboard
+void viewClassAnalytics(const std::vector<Student> &students)
+{
+    if (students.empty())
+    {
+        std::cout << "\nNo student records available for analytics.\n";
+        return;
+    }
 
-        switch (choice) {
-            case 1:
-                addNewStudent(students);
-                break;
-            case 2:
-                if (students.empty()) {
-                    std::cout << "\nNo student records found.\n";
-                } else {
-                    printClassRosterTable(students);
-                }
-                break;
-            case 3: {
-                std::string searchName;
-                std::cout << "\nEnter student name to search: ";
-                std::getline(std::cin, searchName);
-                Student* found = searchStudentByName(students, searchName);
-                if (found != nullptr) {
-                    printIndividualReportCard(*found);
-                } else {
-                    std::cout << "\nStudent \"" << searchName << "\" not found.\n";
-                }
-                break;
-            }
-            case 4:
-                updateStudentRecord(students);
-                break;
-            case 5:
-                deleteStudentRecord(students);
-                break;
-            case 6:
-                if (students.empty()) {
-                    std::cout << "\nNo student records to sort.\n";
-                } else {
-                    sortByHighestGPA(students);
-                    std::cout << "\nStudents ranked by highest GPA:\n";
-                    printClassRosterTable(students);
-                }
-                break;
-            case 7: {
-                if (students.empty()) {
-                    std::cout << "\nNo student records available for analytics.\n";
-                    break;
-                }
-                std::cout << "\n========================================\n";
-                std::cout << "      CLASS ANALYTICS DASHBOARD         \n";
-                std::cout << "========================================\n";
-                std::cout << "Total Students     : " << students.size() << "\n";
-                std::cout << "Class Average GPA  : " << std::fixed << std::setprecision(2) << calculateClassAverage(students) << "\n";
-                std::cout << "Highest GPA        : " << std::fixed << std::setprecision(2) << getHighestScore(students) << "\n";
-                std::cout << "Lowest GPA         : " << std::fixed << std::setprecision(2) << getLowestScore(students) << "\n";
-                std::cout << "Passing Students   : " << countPassingStudents(students, 50.0) << "\n";
-                std::cout << "Failing Students   : " << countFailingStudents(students, 50.0) << "\n";
-                std::cout << "========================================\n";
-                break;
-            }
-            case 8:
-                saveToFile(students, filename);
-                std::cout << "\nData saved successfully.\n";
-                break;
-            case 9:
-                saveToFile(students, filename);
-                std::cout << "\nAuto-saved data. Exiting program. Goodbye!\n";
-                break;
+    int passing = countPassingStudents(students, 60.0);
+    int failing = countFailingStudents(students, 60.0);
+
+    std::cout << "\n========================================\n";
+    std::cout << "      CLASS ANALYTICS DASHBOARD         \n";
+    std::cout << "========================================\n";
+    std::cout << " Total Students     : " << students.size() << "\n";
+    std::cout << " Class Average GPA  : " << std::fixed << std::setprecision(2) << calculateClassAverage(students) << "\n";
+    std::cout << " Highest GPA        : " << std::fixed << std::setprecision(2) << getHighestScore(students) << "\n";
+    std::cout << " Lowest GPA         : " << std::fixed << std::setprecision(2) << getLowestScore(students) << "\n";
+    std::cout << " Passing Students   : " << passing << "\n";
+    std::cout << " Failing Students   : " << failing << "\n";
+    std::cout << "========================================\n";
+}
+
+// Main Interactive Menu Loop (Strictly 5 Options)
+void runApplicationMenu(std::vector<Student> &students, const std::string &filename)
+{
+    int choice = 0;
+    do
+    {
+        std::cout << "========================================\n";
+        std::cout << "      STUDENT GRADE CALCULATOR          \n";
+        std::cout << "========================================\n";
+        std::cout << " 1. Register New Student Record\n";
+        std::cout << " 2. Retrieve Student Transcript\n";
+        std::cout << " 3. Modify Student Information\n";
+        std::cout << " 4. Remove Student Record\n";
+        std::cout << " 5. Generate Performance Analytics\n";
+        std::cout << "----------------------------------------\n";
+
+        choice = getValidatedInt(" Enter your choice (1-5): ", 1, 5);
+
+        switch (choice)
+        {
+        case 1:
+            addNewStudent(students, filename);
+            break;
+        case 2:
+            viewIndividualRecord(students);
+            break;
+        case 3:
+            updateStudentRecord(students, filename);
+            break;
+        case 4:
+            deleteStudentRecord(students, filename);
+            break;
+        case 5:
+            viewClassAnalytics(students);
+            break;
         }
-    } while (choice != 9);
+    } while (true);
 }

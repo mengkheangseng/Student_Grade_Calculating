@@ -1,0 +1,1 @@
+//g++ main.cpp menu_ui.cpp grades.cpp file_io.cpp search_sort.cpp - o student_calculator
