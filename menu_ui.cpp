@@ -64,8 +64,23 @@ void addNewStudent(std::vector<Student> &students, const std::string &filename)
     Student newStudent;
     std::cout << "\n--- ADD STUDENT ---\n";
 
-    // Auto-generate Student ID (e.g., S1001, S1002, S1003...)
-    int nextIdNum = 1001 + static_cast<int>(students.size());
+    // Auto-generate next Student ID by finding the highest existing ID
+    int maxIdNum = 1000; // Base starting number if list is empty
+
+    for (const auto &s : students)
+    {
+        // Assuming format is 'S' followed by numbers (e.g., "S1001")
+        if (s.studentID.length() > 1 && s.studentID[0] == 'S')
+        {
+            int idNum = std::stoi(s.studentID.substr(1));
+            if (idNum > maxIdNum)
+            {
+                maxIdNum = idNum;
+            }
+        }
+    }
+
+    int nextIdNum = maxIdNum + 1;
     newStudent.studentID = "S" + std::to_string(nextIdNum);
 
     std::cout << "Assigned Student ID  : " << newStudent.studentID << "\n";
@@ -136,13 +151,13 @@ void updateStudentRecord(std::vector<Student> &students, const std::string &file
     }
 
     std::cout << "\nFound Student: " << found->name << " (ID: " << found->studentID << ")\n";
-    std::cout << "1. Update Name/ID\n";
-    std::cout << "2. Re-enter Course Scores\n";
+    std::cout << "1. Update Name\n";
+    std::cout << "2. Re-Enter Course Scores\n";
     int choice = getValidatedInt("Choose update option (1-2): ", 1, 2);
 
     if (choice == 1)
     {
-        std::cout << "Enter new Name: ";
+        std::cout << "Enter New Name: ";
         std::getline(std::cin, found->name);
     }
     else if (choice == 2)
