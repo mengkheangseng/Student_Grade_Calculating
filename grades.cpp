@@ -368,7 +368,7 @@ void printIndividualReportCard(const Student& student)
     cout << " Total Credits Earned    : " << student.totalCreditsEarned << "\n";
     cout << " Cumulative GPA          : " << fixed << setprecision(2) << student.cumulativeGPA << " / 4.00\n";
     cout << " Academic Standing       : " << student.academicStanding << "\n";
-    cout << " Remarks                 : \"" << getLetterGradeFromGPA(student.cumulativeGPA) << "\" " << (calculateLetterGrade(calculateStudentAverage(student))) << "\n";
+    cout << " Remarks                 : \"" << getLetterGradeFromGPA(student.cumulativeGPA) << "\" " << getGradeRemarks(getLetterGradeFromGPA(student.cumulativeGPA)) << "\n";
     cout << "========================================================================\n";
 }
 
