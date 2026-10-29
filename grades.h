@@ -1,29 +1,34 @@
 #ifndef GRADES_H
 #define GRADES_H
 
-#include <string>
-#include <vector>
 #include "student.h"
+#include <vector>
+#include <string>
+#include <iostream>
+#include <iomanip>
 
 // ============================================================================
-// CONSTANTS
-// ============================================================================
-// Maximum number of subjects allowed per student
-const int MAX_SUBJECTS = 20;
-
-// Maximum number of students supported for fixed-size student arrays
-const int MAX_STUDENTS = 50;
-
-// Valid score boundaries
-const double MIN_SCORE = 0.0;
-const double MAX_SCORE = 100.0;
-
-// ============================================================================
-// CORE GRADING & GPA FUNCTION PROTOTYPES
+// 1. GRADE & AVERAGE CALCULATION ENGINE
 // ============================================================================
 
 /**
- * Converts a numeric percentage score (0 - 100) into an official letter grade:
+ * Calculates the arithmetic mean (average) from a list of numerical marks/scores.
+ *
+ * @param marks Vector of double score values.
+ * @return double The arithmetic average, or 0.0 if marks is empty.
+ */
+double calculateAverage(const std::vector<double>& marks);
+
+/**
+ * Calculates the average percentage score across all courses for a student.
+ *
+ * @param student The student record.
+ * @return double The average score, or 0.0 if no courses are present.
+ */
+double calculateStudentAverage(const Student& student);
+
+/**
+ * Translates a numerical average/score (0 - 100) into a letter grade:
  *   93.00 - 100.00% -> "A"
  *   90.00 -  92.99% -> "A-"
  *   87.00 -  89.99% -> "B+"
@@ -36,95 +41,110 @@ const double MAX_SCORE = 100.0;
  *   63.00 -  66.99% -> "D"
  *   60.00 -  62.99% -> "D-"
  *   Below 60.00%    -> "F"
+ *
+ * @param score Numerical percentage score.
+ * @return std::string The corresponding letter grade.
  */
 std::string calculateLetterGrade(double score);
 
 /**
- * Converts a numeric score to official GPA Quality Points:
- *   A  -> 4.00, A- -> 3.67, B+ -> 3.33, B  -> 3.00, B- -> 2.67
- *   C+ -> 2.33, C  -> 2.00, C- -> 1.67, D+ -> 1.33, D  -> 1.00
- *   D- -> 0.67, F  -> 0.00
+ * Maps a numerical percentage score to official 4.0 scale GPA quality points.
+ *
+ * @param score Numerical percentage score.
+ * @return double Quality points (0.00 to 4.00).
  */
 double scoreToGradePoint(double score);
 
 /**
- * Returns the institutional achievement description for a letter grade.
- * E.g., "A" -> "Outstanding attainment of course goals"
+ * Returns descriptive remarks for a given letter grade.
+ *
+ * @param letterGrade The letter grade string.
+ * @return std::string Official description / remarks.
  */
-std::string getGradeDescription(const std::string &letterGrade);
+std::string getGradeRemarks(const std::string& letterGrade);
 
 /**
- * Computes Cumulative GPA using credit-weighted quality points:
- *   GPA = Sum(Quality Points_i * Credit_i) / Sum(Credit_i)
+ * Computes all grading metrics for a student:
+ * - Updates course-level letter grades and quality points.
+ * - Computes total credits attempted and total credits earned.
+ * - Computes credit-weighted cumulative GPA.
+ * - Sets the student's overall academic standing.
+ *
+ * @param student Reference to the student record to update.
  */
-double calculateGPA(const double scores[], const int credits[], int numSubjects);
-
-/**
- * Calculates total credit hours attempted.
- */
-int calculateTotalCredits(const int credits[], int numSubjects);
-
-/**
- * Calculates total credits earned (passing subjects: score >= 60.00%).
- */
-int calculateEarnedCredits(const double scores[], const int credits[], int numSubjects);
-
-/**
- * Prompts user interactively for subject credit hours and scores with validation.
- */
-void inputSubjectData(double scores[], int credits[], int &numSubjects, int maxSubjects = MAX_SUBJECTS);
+void computeStudentMetrics(Student& student);
 
 // ============================================================================
-// SINGLE STUDENT REPORT CARD PROTOTYPES
+// 2. CLASS ANALYTICS DASHBOARD
 // ============================================================================
 
 /**
- * Displays an individual student report card with full subject breakdown.
+ * Calculates the overall class average cumulative GPA across all enrolled students.
+ *
+ * @param students Collection of enrolled students.
+ * @return double Average cumulative GPA of the class, or 0.0 if empty.
  */
-void printReportCard(const double scores[], const int credits[], int numSubjects, 
-                     const std::string &studentName = "", const std::string &studentID = "");
+double calculateClassAverage(const std::vector<Student>& students);
 
 /**
- * Overloaded version to print a report card directly from a Student struct.
+ * Finds and returns the highest cumulative GPA among enrolled students.
+ *
+ * @param students Collection of enrolled students.
+ * @return double The highest cumulative GPA found, or 0.0 if empty.
  */
-void printReportCard(const Student &s);
+double getHighestScore(const std::vector<Student>& students);
+
+/**
+ * Finds and returns the lowest cumulative GPA among enrolled students.
+ *
+ * @param students Collection of enrolled students.
+ * @return double The lowest cumulative GPA found, or 0.0 if empty.
+ */
+double getLowestScore(const std::vector<Student>& students);
+
+/**
+ * Counts the total number of students meeting or exceeding the passing threshold.
+ *
+ * @param students Collection of enrolled students.
+ * @param passingThreshold Minimum average score percentage required to pass (default: 60.0).
+ * @return int Total number of passing students.
+ */
+int countPassingStudents(const std::vector<Student>& students, double passingThreshold = 60.0);
+
+/**
+ * Counts the total number of students failing to meet the passing threshold.
+ *
+ * @param students Collection of enrolled students.
+ * @param passingThreshold Minimum average score percentage required to pass (default: 60.0).
+ * @return int Total number of failing students.
+ */
+int countFailingStudents(const std::vector<Student>& students, double passingThreshold = 60.0);
+
+/**
+ * Displays a complete analytics dashboard summary to the console.
+ *
+ * @param students Collection of enrolled students.
+ */
+void displayClassAnalytics(const std::vector<Student>& students);
 
 // ============================================================================
-// WHOLE CLASS / ALL STUDENTS OUTPUT PROTOTYPES
+// 3. FORMATTED REPORT GENERATOR
 // ============================================================================
 
 /**
- * Displays a master summary table of ALL students in the class.
- * Includes:
- *   - Table of all students: ID, Name, Average Score, Letter Grade, GPA, and Academic Status
- *   - Class statistics: Total students, Class Average Score, Class Average GPA,
- *     Passing vs Failing counts/rates, Highest Performer, and Lowest Performer.
+ * Formats and prints a detailed individual student report card with
+ * course-by-course breakdown, total credits, GPA, and standing.
  *
- * @param students Fixed-size array of Student objects.
- * @param studentCount The number of students in the array.
+ * @param student The student record to print.
  */
-void displayAllStudents(const Student students[], int studentCount);
+void printIndividualReportCard(const Student& student);
 
 /**
- * Overloaded version for std::vector<Student> (integrates directly with Member 1's file_io).
+ * Formats and prints a neatly aligned class roster table showing all students,
+ * total enrolled courses, credits, average scores, GPAs, letter grades, and standings.
  *
- * @param students Vector of Student objects.
+ * @param students Collection of enrolled students.
  */
-void displayAllStudents(const std::vector<Student> &students);
-
-/**
- * Displays full individual report cards for every student in the collection sequentially.
- *
- * @param students Fixed-size array of Student objects.
- * @param studentCount The number of students in the array.
- */
-void printAllReportCards(const Student students[], int studentCount);
-
-/**
- * Overloaded version of batch report cards for std::vector<Student>.
- *
- * @param students Vector of Student objects.
- */
-void printAllReportCards(const std::vector<Student> &students);
+void printClassRosterTable(const std::vector<Student>& students);
 
 #endif // GRADES_H
