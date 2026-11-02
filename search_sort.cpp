@@ -3,8 +3,10 @@
 #include <string>
 #include <algorithm>
 
+using namespace std;
+
 // 1. Search for a student by name (returns pointer to student, or nullptr if not found)
-Student *searchStudentByName(std::vector<Student> &students, const string &searchName)
+Student *searchStudentByName(vector<Student> &students, const string &searchName)
 {
     for (auto &s : students)
     {
@@ -17,7 +19,7 @@ Student *searchStudentByName(std::vector<Student> &students, const string &searc
 }
 
 // 2. Sort students by highest-to-lowest cumulative GPA (for rankings)
-void sortByHighestGPA(std::vector<Student> &students)
+void sortByHighestGPA(vector<Student> &students)
 {
     sort(students.begin(), students.end(), [](const Student &a, const Student &b)
               {

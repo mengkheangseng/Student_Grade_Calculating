@@ -59,7 +59,7 @@ string calculateLetterGrade(double score)
     else                    return "F";
 }
 
-std::string getLetterGradeFromGPA(double cumulativeGPA)
+string getLetterGradeFromGPA(double cumulativeGPA)
 {
     if (cumulativeGPA >= 4.00)
         return "A";

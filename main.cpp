@@ -3,13 +3,15 @@
 #include "student.h"
 #include "menu_ui.h"
 
+using namespace std;
+
 // Forward declaration for file loading function (from Member 1's file I/O module)
-void loadFromFile(std::vector<Student> &students, const std::string &filename);
+void loadFromFile(vector<Student> &students, const string &filename);
 
 int main()
 {
-    std::vector<Student> students;
-    std::string filename = "students.txt"; // Database text file
+    vector<Student> students;
+    string filename = "students.txt"; // Database text file
 
     // 1. Load existing records automatically at startup
     loadFromFile(students, filename);

@@ -7,21 +7,22 @@
 #include <iostream>
 #include <iomanip>
 
+using namespace std;
 
 double calculateStudentAverage(const Student &student);
-std::string calculateLetterGrade(double score);
-std::string getLetterGradeFromGPA(double cumulativeGPA);
+string calculateLetterGrade(double score);
+string getLetterGradeFromGPA(double cumulativeGPA);
 double scoreToGradePoint(double score);
-std::string getGradeRemarks(const std::string &letterGrade);
+string getGradeRemarks(const string &letterGrade);
 void computeStudentMetrics(Student &student);
-double calculateClassAverage(const std::vector<Student> &students);
-double getHighestScore(const std::vector<Student> &students);
-double getLowestScore(const std::vector<Student> &students);
-int countPassingStudents(const std::vector<Student> &students, double passingThreshold = 60.0);
-int countFailingStudents(const std::vector<Student> &students, double passingThreshold = 60.0);
-void displayClassAnalytics(const std::vector<Student> &students);
+double calculateClassAverage(const vector<Student> &students);
+double getHighestScore(const vector<Student> &students);
+double getLowestScore(const vector<Student> &students);
+int countPassingStudents(const vector<Student> &students, double passingThreshold = 60.0);
+int countFailingStudents(const vector<Student> &students, double passingThreshold = 60.0);
+void displayClassAnalytics(const vector<Student> &students);
 void printIndividualReportCard(const Student &student);
-void printClassRosterTable(const std::vector<Student> &students);
+void printClassRosterTable(const vector<Student> &students);
 #endif
 // ============================================================================
 // 1. GRADE & AVERAGE CALCULATION ENGINE
@@ -33,7 +34,7 @@ void printClassRosterTable(const std::vector<Student> &students);
  * @param marks Vector of double score values.
  * @return double The arithmetic average, or 0.0 if marks is empty.
  */
-// double calculateAverage(const std::vector<double>& marks);
+// double calculateAverage(const vector<double>& marks);
 
 /**
  * Calculates the average percentage score across all courses for a student.
@@ -59,9 +60,9 @@ void printClassRosterTable(const std::vector<Student> &students);
  *   Below 60.00%    -> "F"
  *
  * @param score Numerical percentage score.
- * @return std::string The corresponding letter grade.
+ * @return string The corresponding letter grade.
  */
-// std::string calculateLetterGrade(double score);
+// string calculateLetterGrade(double score);
 
 /**
  * Maps a numerical percentage score to official 4.0 scale GPA quality points.
@@ -75,9 +76,9 @@ void printClassRosterTable(const std::vector<Student> &students);
  * Returns descriptive remarks for a given letter grade.
  *
  * @param letterGrade The letter grade string.
- * @return std::string Official description / remarks.
+ * @return string Official description / remarks.
  */
-// std::string getGradeRemarks(const std::string& letterGrade);
+// string getGradeRemarks(const string& letterGrade);
 
 /**
  * Computes all grading metrics for a student:
@@ -100,7 +101,7 @@ void printClassRosterTable(const std::vector<Student> &students);
  * @param students Collection of enrolled students.
  * @return double Average cumulative GPA of the class, or 0.0 if empty.
  */
-// double calculateClassAverage(const std::vector<Student>& students);
+// double calculateClassAverage(const vector<Student>& students);
 
 /**
  * Finds and returns the highest cumulative GPA among enrolled students.
@@ -108,7 +109,7 @@ void printClassRosterTable(const std::vector<Student> &students);
  * @param students Collection of enrolled students.
  * @return double The highest cumulative GPA found, or 0.0 if empty.
  */
-// double getHighestScore(const std::vector<Student>& students);
+// double getHighestScore(const vector<Student>& students);
 
 /**
  * Finds and returns the lowest cumulative GPA among enrolled students.
@@ -116,7 +117,7 @@ void printClassRosterTable(const std::vector<Student> &students);
  * @param students Collection of enrolled students.
  * @return double The lowest cumulative GPA found, or 0.0 if empty.
  */
-// double getLowestScore(const std::vector<Student>& students);
+// double getLowestScore(const vector<Student>& students);
 
 /**
  * Counts the total number of students meeting or exceeding the passing threshold.
@@ -125,7 +126,7 @@ void printClassRosterTable(const std::vector<Student> &students);
  * @param passingThreshold Minimum average score percentage required to pass (default: 60.0).
  * @return int Total number of passing students.
  */
-// int countPassingStudents(const std::vector<Student>& students, double passingThreshold = 60.0);
+// int countPassingStudents(const vector<Student>& students, double passingThreshold = 60.0);
 
 /**
  * Counts the total number of students failing to meet the passing threshold.
@@ -134,14 +135,14 @@ void printClassRosterTable(const std::vector<Student> &students);
  * @param passingThreshold Minimum average score percentage required to pass (default: 60.0).
  * @return int Total number of failing students.
  */
-// int countFailingStudents(const std::vector<Student>& students, double passingThreshold = 60.0);
+// int countFailingStudents(const vector<Student>& students, double passingThreshold = 60.0);
 
 /**
  * Displays a complete analytics dashboard summary to the console.
  *
  * @param students Collection of enrolled students.
  */
-// void displayClassAnalytics(const std::vector<Student>& students);
+// void displayClassAnalytics(const vector<Student>& students);
 
 // ============================================================================
 // 3. FORMATTED REPORT GENERATOR
@@ -161,6 +162,6 @@ void printClassRosterTable(const std::vector<Student> &students);
  *
  * @param students Collection of enrolled students.
  */
-// void printClassRosterTable(const std::vector<Student>& students);
+// void printClassRosterTable(const vector<Student>& students);
 
 // #endif // GRADES_H
